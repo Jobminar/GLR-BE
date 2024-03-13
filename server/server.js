@@ -24,12 +24,17 @@ app.use(compression({ threshold: 2048 }));
 app.use(express.json()); // Ensure express.json() is used instead of json()
 
 // MongoDB connection
-connect(process.env.MONGO_URI)
+connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
 // Socket.IO setup
 const io = new SocketIOServer(server, { cors: corsOptions });
+
+// Socket.IO logic
 const messages = {};
 
 io.on("connection", (socket) => {

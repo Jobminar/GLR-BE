@@ -46,11 +46,6 @@ const userSchema = new Schema({
       message: "Alternate number must be a valid 10-digit number.",
     },
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 8, // Enforce minimum password length for security
-  },
 });
 
 export default model("User", userSchema);

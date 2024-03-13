@@ -1,4 +1,5 @@
 import { createTransport } from "nodemailer";
+import bcrypt from "bcrypt";
 import User from "../models/user.js"; // Replace with your user model path
 
 // Function to generate a random 4-digit OTP
@@ -15,16 +16,16 @@ const sendOTP = async (mobileNumber, email) => {
     port: 465,
     secure: true,
     auth: {
-      user: "jobminarinfo@gmail.com", // Replace with a secure environment variable
+      user: process.env.EMAIL_USER, // Replace with a secure environment variable
       pass: process.env.EMAIL_PASSWORD, // Replace with a secure environment variable for password
     },
   });
 
   const mailOptions = {
-    from: "jobminarinfo@gmail.com", // Replace with your email address
+    from: process.env.EMAIL_USER, // Replace with your email address
     to: email,
     subject: `Login OTP for Your Account with mobile number ${mobileNumber}`,
-    text: `Your login OTP is ${otp}. Please enter this code to verify your identity. This code will expire in 1 minute.Thank you for choosing GLR`,
+    text: `Your login OTP is ${otp}. Please enter this code to verify your identity. This code will expire in 1 minute. Thank you for choosing GLR`,
   };
 
   try {
@@ -42,7 +43,7 @@ export async function login(req, res) {
   const { mobileNumber } = req.body;
 
   try {
-    const user = await findOne({ mobileNumber });
+    const user = await User.findOne({ mobileNumber });
     if (!user) {
       return res
         .status(404)
@@ -75,24 +76,25 @@ export async function verifyOTP(req, res) {
   const { mobileNumber, otp } = req.body;
 
   try {
-    const user = await findOne({ mobileNumber });
+    const user = await User.findOne({ mobileNumber });
     if (!user) {
       return res
         .status(404)
         .json({ message: "User not found with the provided mobile number." });
     }
 
-    const currentOTP = await findOne({ mobileNumber, otp });
-    if (!currentOTP || currentOTP.otpExpireAt < Date.now()) {
-      // Check for existence and expiration
+    const currentOTP = await User.findOneAndDelete({
+      mobileNumber,
+      otp,
+      otpExpireAt: { $gte: Date.now() }, // Check for expiration
+    });
+
+    if (!currentOTP) {
       return res.status(401).json({ message: "Invalid or expired OTP." });
     }
 
     // OTP verification successful (handle login logic here)
     res.status(200).json({ message: "OTP verified successfully." });
-
-    // Remove the OTP document from the database after verification
-    await deleteOne({ mobileNumber, otp });
   } catch (error) {
     console.error("Error during OTP verification:", error);
     res.status(500).json({ message: "An error occurred during verification." });
@@ -144,7 +146,6 @@ export async function signUp(req, res) {
       dateOfBirth,
       location,
       alternateNumber,
-      password,
     });
 
     // Hash the password before saving
