@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import http from "http";
 import compression from "compression";
-import { connect } from "mongoose";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Server as SocketIOServer } from "socket.io";
 
@@ -23,10 +23,24 @@ app.use(compression({ threshold: 2048 }));
 app.use(express.json()); // Ensure express.json() is used instead of json()
 
 // MongoDB connection without deprecated options
-connect(process.env.MONGO_URI || "YOUR_MONGO_URI")
+const mongoURI = process.env.MONGO_URI || "YOUR_MONGO_URI";
+mongoose
+  .connect(mongoURI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
+// MongoDB connection events
+mongoose.connection.on("connected", () => {
+  console.log("Mongoose connected to db");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.log(err.message);
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("Mongoose connection is disconnected.");
+});
 // Socket.IO setup
 const io = new SocketIOServer(server, { cors: corsOptions });
 
@@ -59,7 +73,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).send(err.message || "Internal Server Error");
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
