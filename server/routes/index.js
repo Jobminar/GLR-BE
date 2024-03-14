@@ -4,12 +4,12 @@ const router = Router();
 import { login, verifyOTP, signUp } from "../controllers/userController.js";
 
 // Login route
-router.post("/login", login);
+router.post("/user/login", login);
 
 // Optional OTP verification route
-router.post("/verify-otp", verifyOTP);
+router.post("/user/verify-otp", verifyOTP);
 
 // Signup route
-router.post("/signup", signUp);
+router.post("/user/signup", signUp);
 
 export default router;
