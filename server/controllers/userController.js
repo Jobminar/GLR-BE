@@ -110,12 +110,11 @@ export async function signUp(req, res) {
     dateOfBirth,
     location,
     alternateNumber,
-    password,
   } = req.body;
 
   try {
     // Basic user data validation (optional)
-    if (!fullName || !mobileNumber || !email || !dateOfBirth || !password) {
+    if (!fullName || !mobileNumber || !email || !dateOfBirth) {
       return res
         .status(400)
         .json({ message: "Please provide all required fields." });
@@ -142,13 +141,10 @@ export async function signUp(req, res) {
       alternateNumber,
     });
 
-    // Hash the password before saving
-    newUser.password = await bcrypt.hash(newUser.password, 10);
-
     await newUser.save();
 
-    // No need for OTP handling since verification is removed
-    res.status(201).json({ message: "User created successfully." }); // Or redirect to login
+    // Respond with success message
+    res.status(201).json({ message: "User created successfully." });
   } catch (error) {
     console.error("Error during signup:", error);
     res.status(500).json({ message: "An error occurred during signup." });

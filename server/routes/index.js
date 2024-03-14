@@ -1,15 +1,10 @@
-import { Router } from "express";
-const router = Router();
+import express from "express";
+import { login, signUp, verifyOTP } from "../controllers/userController.js";
 
-import { login, verifyOTP, signUp } from "../controllers/userController.js";
+const router = express.Router();
 
-// Login route
 router.post("/user/login", login);
-
-// Optional OTP verification route
-router.post("/user/verify-otp", verifyOTP);
-
-// Signup route
 router.post("/user/signup", signUp);
+router.post("/user/verify-otp", verifyOTP);
 
 export default router;

@@ -5,24 +5,20 @@ import compression from "compression";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Server as SocketIOServer } from "socket.io";
+import router from "./routes/index.js";
 
 dotenv.config();
 
+// Initialize Express app and HTTP server
 const app = express();
 const server = http.createServer(app);
 
-// CORS configuration for allowing all origins (not recommended for production)
-const corsOptions = {
-  origin: "*", // Allow all origins (be cautious in production)
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Allow all common HTTP methods
-  credentials: true, // Enable credentials for cookies, authorization headers with HTTPS
-};
-app.use(cors(corsOptions)); // Apply CORS middleware with the options
+// Middleware
+app.use(cors()); // CORS configuration
+app.use(compression()); // Compression middleware
+app.use(express.json()); // JSON parsing middleware
 
-app.use(compression({ threshold: 2048 }));
-app.use(express.json()); // Ensure express.json() is used instead of json()
-
-// MongoDB connection without deprecated options
+// MongoDB connection
 const mongoURI = process.env.MONGO_URI || "YOUR_MONGO_URI";
 mongoose
   .connect(mongoURI)
@@ -41,8 +37,9 @@ mongoose.connection.on("error", (err) => {
 mongoose.connection.on("disconnected", () => {
   console.log("Mongoose connection is disconnected.");
 });
+
 // Socket.IO setup
-const io = new SocketIOServer(server, { cors: corsOptions });
+const io = new SocketIOServer(server);
 
 // Socket.IO logic
 const messages = {};
@@ -67,12 +64,16 @@ io.on("connection", (socket) => {
   });
 });
 
-// Improved global error handler
+// Routes
+app.use("/", router);
+
+// Global error handler
 app.use((err, req, res, next) => {
   console.error("Global error:", err);
   res.status(err.status || 500).send(err.message || "Internal Server Error");
 });
 
+// Start server
 const port = process.env.PORT || 4000;
 server.listen(port, () => {
   console.log(`Server listening on port ${port}`);
