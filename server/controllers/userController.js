@@ -131,12 +131,6 @@ export async function signUp(req, res) {
       });
     }
 
-    // Optional: Generate OTP (use `sendOTP` function if OTP verification is enabled)
-    let otp;
-    if (sendOTP) {
-      otp = await sendOTP(mobileNumber, email);
-    }
-
     // Create a new user
     const newUser = new User({
       fullName,
@@ -153,15 +147,8 @@ export async function signUp(req, res) {
 
     await newUser.save();
 
-    // Send OTP verification email or handle successful signup based on requirements
-    if (otp) {
-      res.status(201).json({
-        message:
-          "Signup successful. Please check your email for the verification code.",
-      });
-    } else {
-      res.status(201).json({ message: "User created successfully." }); // Or redirect to login if OTP verification is not used
-    }
+    // No need for OTP handling since verification is removed
+    res.status(201).json({ message: "User created successfully." }); // Or redirect to login
   } catch (error) {
     console.error("Error during signup:", error);
     res.status(500).json({ message: "An error occurred during signup." });
