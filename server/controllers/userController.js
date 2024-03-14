@@ -12,6 +12,7 @@ const sendOTP = async (mobileNumber, email) => {
   const otp = generateOTP();
 
   const transporter = createTransport({
+    service: "Gmail",
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
