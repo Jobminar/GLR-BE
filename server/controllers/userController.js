@@ -92,13 +92,14 @@ export async function verifyOTP(req, res) {
         .json({ message: "User not found with the provided mobile number." });
     }
 
-    const currentOTP = await OTP.findOneAndDelete({
+    const currentOTP = await OTP.findOne({
       mobileNumber,
       otp,
-      otpExpireAt: { $gte: Date.now() }, // Check for expiration
+      otpExpireAt: { $gte: new Date() }, // Check for expiration using current time
     });
 
     if (!currentOTP) {
+      // Invalid or expired OTP
       return res.status(401).json({ message: "Invalid or expired OTP." });
     }
 
