@@ -1,7 +1,7 @@
 import { createTransport } from "nodemailer";
-import bcrypt from "bcrypt";
-import User from "../models/user.js"; // Replace with your user model path
 
+import User from "../models/user.js"; // Replace with your user model path
+import OTP from "../models/otp.js";
 // Function to generate a random 4-digit OTP
 const generateOTP = () => {
   return Math.floor(1000 + Math.random() * 9000); // Ensures 4-digit number
@@ -59,7 +59,7 @@ export async function login(req, res) {
     console.log("OTP sent successfully:", otp);
 
     console.log("Creating a new OTP document in MongoDB with expiration...");
-    const newOTP = new User({
+    const newOTP = new OTP({
       mobileNumber,
       otp,
       otpExpireAt: Date.now() + 60000, // Expires in 1 minute
@@ -92,7 +92,7 @@ export async function verifyOTP(req, res) {
         .json({ message: "User not found with the provided mobile number." });
     }
 
-    const currentOTP = await User.findOneAndDelete({
+    const currentOTP = await OTP.findOneAndDelete({
       mobileNumber,
       otp,
       otpExpireAt: { $gte: Date.now() }, // Check for expiration
