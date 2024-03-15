@@ -42,30 +42,38 @@ const sendOTP = async (mobileNumber, email) => {
 // Login controller with OTP verification and expiration
 export async function login(req, res) {
   const { mobileNumber } = req.body;
+  console.log("Received login request for mobile number:", mobileNumber);
 
   try {
+    console.log("Attempting to find user in the database...");
     const user = await User.findOne({ mobileNumber });
     if (!user) {
+      console.log("User not found with the provided mobile number.");
       return res
         .status(404)
         .json({ message: "User not found with the provided mobile number." });
     }
+    console.log("User found, sending OTP...");
 
     const otp = await sendOTP(mobileNumber, user.email);
+    console.log("OTP sent successfully:", otp);
 
-    // Create a new OTP document in MongoDB with expiration
+    console.log("Creating a new OTP document in MongoDB with expiration...");
     const newOTP = new User({
       mobileNumber,
       otp,
-      otpExpireAt: Date.now() + 60000,
-    }); // Expires in 1 minute
+      otpExpireAt: Date.now() + 60000, // Expires in 1 minute
+    });
     await newOTP.save();
+    console.log("OTP document saved successfully.");
 
+    console.log("Sending response to client...");
     res.status(200).json({
       message:
         "OTP sent successfully. Please check your email for the verification code.",
       otp, // Include the generated OTP for verification on the frontend (optional)
     });
+    console.log("Response sent successfully.");
   } catch (error) {
     console.error("Error during login process:", error);
     res.status(500).json({ message: "An error occurred during login." });
