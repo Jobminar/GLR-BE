@@ -62,7 +62,7 @@ export async function login(req, res) {
     const newOTP = new OTP({
       mobileNumber,
       otp,
-      otpExpireAt: Date.now() + 60000, // Expires in 1 minute
+      otpExpireAt: Date.now() + 120000, // Expires in 1 minute
     });
     await newOTP.save();
     console.log("OTP document saved successfully.");
