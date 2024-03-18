@@ -3,6 +3,8 @@ import { login, signUp, verifyOTP } from "../controllers/userController.js";
 import courseController from "../controllers/courseController.js";
 import cartController from "../controllers/cartController.js";
 import orderController from "../controllers/orderController.js";
+import blogsController from "../controllers/blogsController.js";
+import careerController from "../controllers/careerController.js";
 
 const router = express.Router();
 //user routes
@@ -20,4 +22,10 @@ router.post("/carts/:userId/add", cartController.addToCart);
 //order controller
 router.get("/orders", orderController.getAllOrders);
 router.post("/orders", orderController.createOrder);
+router.post("/postblogs",blogsController.createBlogs)
+router.get("/getblogs",blogsController.getAllBlogs)
+
+router.post("/postcareer",careerController.createCareer)
+router.get("/getcareer",careerController.getAllCareer)
+
 export default router;
