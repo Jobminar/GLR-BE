@@ -5,7 +5,6 @@ const blogsSchema=new Schema({
     blogImage:{type:String,required:true},
     blogDescription:{type:String,required:true},
     uploadDate:{type:Date,default: Date.now },
-    validDate:{type:String,default:true}
 })
 const Blogs=model("Blogs",blogsSchema)
 export default Blogs

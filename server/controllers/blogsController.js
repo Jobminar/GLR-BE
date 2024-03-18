@@ -11,7 +11,7 @@ const blogsController={
     createBlogs:[upload.single("blogImage"),
     async(req,res)=>{
         try{
-            const {blogName,blogDescription,uploadDate,validDate}=req.body
+            const {blogName,blogDescription,uploadDate}=req.body
 
            
 
@@ -20,7 +20,7 @@ const blogsController={
              }
              const blogImage=req.file.buffer.toString("base64")
 
-            if(!blogName || !blogImage || !blogDescription || !uploadDate ||!validDate){
+            if(!blogName || !blogImage || !blogDescription || !uploadDate ){
                 return res.status(400).json({message:"Required fileds blogName blogDescription uploadDate validDate"})
             }
            
