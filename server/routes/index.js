@@ -14,7 +14,7 @@ router.get("/course", courseController.getAllCourses);
 router.post("/course", courseController.createCourse);
 router.get("/course/:id", courseController.getCourseById);
 
-//cart controller
+//cart controller routes
 router.get("/carts/:userId", cartController.getCartByUserId);
 router.post("/carts/:userId/add", cartController.addToCart);
 //order controller
