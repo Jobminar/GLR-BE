@@ -1,16 +1,16 @@
 import { Schema, model } from "mongoose";
 
 const courseSchema = new Schema({
-  CourseCode: {
+  courseCode: {
     type: String,
     required: true,
     unique: true,
   },
-  Title: {
+  title: {
     type: String,
     required: true,
   },
-  Description: {
+  description: {
     type: String,
     required: true,
   },
@@ -23,11 +23,11 @@ const courseSchema = new Schema({
     required: true,
   },
   students: [String],
-  Duration: {
+  duration: {
     type: Number,
     required: true,
   },
-  File: {
+  file: {
     type: String,
     required: true,
   },
