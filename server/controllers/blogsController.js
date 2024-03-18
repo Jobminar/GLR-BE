@@ -23,7 +23,7 @@ const blogsController={
                 return res.status(400).json({message:"Required fileds blogName blogDescription uploadDate validDate"})
             }
            
-            const newBlog=new Blogs({blogName,blogImage,blogDescription,uploadDate,validDate})
+            const newBlog=new Blogs({blogName,blogImage,blogDescription,uploadDate})
             const savedBlog=await newBlog.save()
             res.status(201).json({message:"Successfully added the data",savedBlog})
             
