@@ -1,4 +1,3 @@
-import { get } from "mongoose";
 import Blogs from "../models/blogsModel.js";
 
 import multer from 'multer'
