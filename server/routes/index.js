@@ -13,8 +13,8 @@ router.post("/user/login", login);
 router.post("/user/signup", signUp);
 router.post("/user/verify-otp", verifyOTP);
 //course controller
-router.get("/course", courseController.getAllCourses);
-router.post("/course", courseController.createCourse);
+router.get("/getcourse", courseController.getAllCourses);
+router.post("/postcourse", courseController.createCourse);
 router.get("/course/:id", courseController.getCourseById);
 
 //cart controller routes
@@ -23,13 +23,13 @@ router.post("/carts/:userId/add", cartController.addToCart);
 //order controller
 router.get("/orders", orderController.getAllOrders);
 router.post("/orders", orderController.createOrder);
-router.post("/postblogs",blogsController.createBlogs)
-router.get("/getblogs",blogsController.getAllBlogs)
+router.post("/postblogs", blogsController.createBlogs);
+router.get("/getblogs", blogsController.getAllBlogs);
 
-router.post("/postcareer",careerController.createCareer)
-router.get("/getcareer",careerController.getAllCareer)
+router.post("/postcareer", careerController.createCareer);
+router.get("/getcareer", careerController.getAllCareer);
 
-router.post("/postcontact",contactController.createContact)
-router.get("/getcontact",contactController.getAllContact)
+router.post("/postcontact", contactController.createContact);
+router.get("/getcontact", contactController.getAllContact);
 
 export default router;
