@@ -1,5 +1,6 @@
 import multer from "multer";
-import { pdfParser } from "pdf-lib";
+import pkg from "pdf-lib";
+const { pdfParser } = pkg;
 import Course from "../models/course.js";
 
 // Multer configuration for file upload
