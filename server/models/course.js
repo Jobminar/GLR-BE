@@ -22,14 +22,14 @@ const courseSchema = new Schema({
     type: String,
     required: true,
   },
-
   duration: {
     type: Number,
     required: true,
   },
-  file: {
-    type: String,
-    required: true,
+  pdfFile: {
+    data: Buffer,
+    contentType: String,
+    fileName: String,
   },
   topics: [String],
   prerequisites: [String],

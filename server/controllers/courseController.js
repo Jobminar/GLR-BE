@@ -25,7 +25,7 @@ export default {
   createCourse: async (req, res) => {
     try {
       // Validate the existence of the PDF file in the request
-      if (!req.file) {
+      if (!req.pdfFile) {
         console.error("PDF file is missing from the request.");
         return res
           .status(400)
@@ -33,7 +33,7 @@ export default {
       }
 
       // Access the PDF file information
-      const pdfFile = req.file;
+      const pdfFile = req.pdfFile;
 
       // Create a new Course instance with the file path
       const newCourse = new Course({
