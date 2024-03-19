@@ -5,6 +5,7 @@ import cartController from "../controllers/cartController.js";
 import orderController from "../controllers/orderController.js";
 import blogsController from "../controllers/blogsController.js";
 import careerController from "../controllers/careerController.js";
+import contactController from "../controllers/contactController.js";
 
 const router = express.Router();
 //user routes
@@ -27,5 +28,8 @@ router.get("/getblogs",blogsController.getAllBlogs)
 
 router.post("/postcareer",careerController.createCareer)
 router.get("/getcareer",careerController.getAllCareer)
+
+router.post("/postcontact",contactController.createContact)
+router.get("/getcontact",contactController.getAllContact)
 
 export default router;
