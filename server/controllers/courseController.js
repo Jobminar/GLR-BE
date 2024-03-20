@@ -1,20 +1,7 @@
 import Course from "../models/course.js";
-import multer from "multer";
+import upload from "../middleware/multerConfig.js";
 
-// Set up Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-// Initialize Multer middleware
-const upload = multer({ storage });
-
-export default {
+const courseController = {
   getAllCourses: async (req, res) => {
     try {
       const courses = await Course.find();
@@ -72,3 +59,8 @@ export default {
     }
   },
 };
+
+// Reference upload to suppress the warning
+console.log(upload);
+
+export default courseController;
