@@ -1,6 +1,7 @@
 import Course from "../models/course.js";
 import multer from "multer";
 
+// Set up Multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");
@@ -10,6 +11,7 @@ const storage = multer.diskStorage({
   },
 });
 
+// Initialize Multer middleware
 const upload = multer({ storage });
 
 export default {
