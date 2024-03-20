@@ -15,7 +15,7 @@ router.post("/user/verify-otp", verifyOTP);
 //course controller
 router.get("/getcourse", courseController.getAllCourses);
 router.post("/postcourse", courseController.createCourse);
-router.get("/course/:id", courseController.getCourseById);
+router.get("/course/:id", courseController.getCourse);
 
 //cart controller routes
 router.get("/carts/:userId", cartController.getCartByUserId);
