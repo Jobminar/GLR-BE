@@ -24,21 +24,27 @@ export default {
 
   createCourse: async (req, res) => {
     try {
-      // Validate the existence of the PDF file in the request
-      if (!req.file) {
-        console.error("PDF file is missing from the request.");
+      // Access the PDF file information from req.file
+      const pdfFile = req.file;
+
+      if (!pdfFile) {
         return res
           .status(400)
           .json({ message: "PDF file is missing from the request." });
       }
 
-      // Access the PDF file information
-      const pdfFile = req.file;
-
       // Create a new Course instance with the file path
       const newCourse = new Course({
         file: pdfFile.path,
         // Include other fields if needed
+        courseCode: req.body.courseCode,
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price,
+        instructor: req.body.instructor,
+        duration: req.body.duration,
+        topics: req.body.topics,
+        prerequisites: req.body.prerequisites,
       });
 
       // Save the new course to the database

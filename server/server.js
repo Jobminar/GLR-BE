@@ -17,7 +17,8 @@ const server = http.createServer(app);
 app.use(cors()); // CORS configuration
 app.use(compression()); // Compression middleware
 app.use(express.json()); // JSON parsing middleware
-
+// Add the Multer middleware to handle file uploads
+app.use(upload.single("pdfFile"));
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI || "YOUR_MONGO_URI";
 mongoose
