@@ -20,7 +20,7 @@ const courseController = {
         }
 
         // Validate file type (allowed extensions: .jpg, .jpeg, .png)
-        const allowedExtensions = [".jpg", ".jpeg", ".png"];
+        const allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf"];
         const fileExtension = extname(file.originalname).toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
           return res
