@@ -9,10 +9,10 @@ const courseSchema = new mongoose.Schema({
   instructor: { type: String, required: true },
   duration: { type: Number, required: true },
   courseImage: { type: Buffer },
-  topics: { type: [String], required: true },
-  prerequisites: { type: [String], required: true },
+  topics: { type: String, required: true },
+  prerequisites: { type: String, required: true },
   publishingOptions: { type: String, required: true },
-  keywords: { type: [String], required: true },
+  keywords: { type: String, required: true },
 });
 
 export default mongoose.model("Course", courseSchema);
