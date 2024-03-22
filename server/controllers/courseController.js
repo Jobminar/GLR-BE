@@ -16,16 +16,16 @@ const courseController = {
 
         // Check if file is included in the request
         if (!file) {
-          return res.status(400).json({ message: "courseImage is required" });
+          throw new Error("courseImage is required");
         }
 
         // Validate file type (allowed extensions: .jpg, .jpeg, .png)
         const allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf"];
         const fileExtension = extname(file.originalname).toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
-          return res
-            .status(400)
-            .json({ message: "Invalid file type. Only JPEG, PNG allowed" });
+          throw new Error(
+            "Invalid file type. Only JPEG, PNG, and PDF are allowed"
+          );
         }
 
         const fileData = file.buffer; // Store file data as buffer
@@ -67,9 +67,13 @@ const courseController = {
         // Respond with success message
         res.status(201).json({ message: "Course created successfully" });
       } catch (error) {
-        // Handle errors
+        // Log the error
         console.error("Error creating course:", error);
-        res.status(500).json({ message: "Internal server error" });
+
+        // Respond with error message
+        res
+          .status(500)
+          .json({ message: error.message || "Internal server error" });
       }
     },
   ],
