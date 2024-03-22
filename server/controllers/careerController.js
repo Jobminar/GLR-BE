@@ -1,86 +1,59 @@
+import Career from '../models/careerModel.js';
+import multer from 'multer';
 
-import Career from "../models/careerModel.js";
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-import multer from 'multer'
+const careerController = {
+  createCareer: [
+    upload.single('image'),
+    async (req, res) => {
+      try {
+        const {
+          jobTitle,
+          companyName,
+          jobLocation,
+          jobType,
+          jobCategory,
+          jobDescription,
+          skills,
+          experience,
+          education,
+          salary,
+          applicationDeadline,
+          applicationUrl,
+          contactPerson,
+          contactMobile,
+          additionalField
+        } = req.body;
 
-const stoarge=multer.memoryStorage()
-const upload=multer({storage:stoarge})
+        const newCareer = new Career({
+          jobTitle,
+          companyName,
+          jobLocation,
+          jobType,
+          jobCategory,
+          jobDescription,
+          skills,
+          experience,
+          education,
+          salary,
+          applicationDeadline,
+          applicationUrl,
+          contactPerson,
+          contactMobile,
+          image: req.file.buffer.toString('base64'), // Assuming the image is uploaded as a file and stored in req.file.buffer
+          additionalField
+        });
 
-const careerController={
+        await newCareer.save();
 
-    createCareer:[ upload.single("careerImage"),
-    
-    async(req,res)=>{
-        try{
-    const {jobTitle,
-        companyName,
-        jobLocation,
-        jobType,
-        jobCategory,
-        jobDescription,
-        skills,
-        experience,
-        education,
-        salary,
-        applicationDead,
-        applicationUrl,
-        contactPerson,
-        contactMobile,
-        additionalField}=req.body
-    
-    if(! jobTitle ||
-       ! companyName ||
-       ! jobLocation ||
-       ! jobType ||
-       ! jobCategory ||
-       ! jobDescription ||
-       ! skills ||
-       ! experience ||
-       ! education ||
-       ! salary ||
-       ! applicationDead ||
-       ! applicationUrl ||
-       ! contactPerson ||
-       ! contactMobile ||
-       ! additionalField){
-        return res.status(400).json({message:"Required fields missing "})
+        res.status(201).json({ message: 'Career created successfully', career: newCareer });
+      } catch (error) {
+        res.status(500).json({ message: 'Error creating career', error: error.message });
+      }
     }
+  ]
+};
 
-    const newCareer=new Career({
-        jobTitle,
-        companyName,
-        jobLocation,
-        jobType,
-        jobCategory,
-        jobDescription,
-        skills,
-        experience,
-        education,
-        salary,
-        applicationDead,
-        applicationUrl,
-        contactPerson,
-        contactMobile,
-        careerImage,
-        additionalField})
-    const savedCareer=await newCareer.save()
-    res.status(201).json({message:"Successfully data added ",savedCareer})
-        }
-        catch(error){
-            res.status(500).json({error:'Internal server error'})
-        }  
-      
-}
-    ],
-    getAllCareer:async(req,res)=>{
-        try{
-       const getData=await Career.find()
-       res.status(201).json(getData)
-        }
-        catch(error){
-            res.status(500).json({error:"failed to get the data"})
-        }
-    }
-
-}
-export default careerController
+export default careerController;

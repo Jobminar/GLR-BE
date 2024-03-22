@@ -26,8 +26,8 @@ router.post("/orders", orderController.createOrder);
 router.post("/postblogs", blogsController.createBlogs);
 router.get("/getblogs", blogsController.getAllBlogs);
 
-router.post("/postcareer", careerController.createCareer);
-router.get("/getcareer", careerController.getAllCareer);
+router.post("/postcareer",careerController.createCareer)
+
 
 router.post("/postcontact", contactController.createContact);
 router.get("/getcontact", contactController.getAllContact);

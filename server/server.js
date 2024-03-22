@@ -17,7 +17,7 @@ const server = http.createServer(app);
 // Middleware
 app.use(cors()); // CORS configuration
 app.use(compression()); // Compression middleware
-app.use(express.json()); // JSON parsing middleware
+app.use(express.json({limit:"40mb"})); // JSON parsing middleware
 // Add the Multer middleware to handle file uploads
 //Set up Multer storage
 const storage = multer.diskStorage({
