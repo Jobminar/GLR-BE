@@ -5,7 +5,7 @@ import cartController from "../controllers/cartController.js";
 import orderController from "../controllers/orderController.js";
 import blogsController from "../controllers/blogsController.js";
 import careerController from "../controllers/careerController.js";
-
+import bookController from "../controllers/bookController.js";
 import contactController from "../controllers/contactController.js";
 
 const router = express.Router();
@@ -32,5 +32,7 @@ router.get("/getcareer", careerController.getAllCareers);
 
 router.post("/postcontact", contactController.createContact);
 router.get("/getcontact", contactController.getAllContact);
-
+//bookrouters
+router.post("/blog", bookController.createBook);
+router.get("/blog", bookController.getAllBooks);
 export default router;
