@@ -5,6 +5,7 @@ import cartController from "../controllers/cartController.js";
 import orderController from "../controllers/orderController.js";
 import blogsController from "../controllers/blogsController.js";
 import careerController from "../controllers/careerController.js";
+
 import contactController from "../controllers/contactController.js";
 
 const router = express.Router();
@@ -27,7 +28,7 @@ router.post("/postblogs", blogsController.createBlogs);
 router.get("/getblogs", blogsController.getAllBlogs);
 
 router.post("/postcareer", careerController.createCareer);
-router.get("/getcareer", careerController.getAllCareer);
+router.get("/getcareer", careerController.getAllCareers);
 
 router.post("/postcontact", contactController.createContact);
 router.get("/getcontact", contactController.getAllContact);
