@@ -8,11 +8,19 @@ const upload = multer({ storage });
 
 const courseController = {
   createCourse: [
-    upload.any(), // Multer middleware to handle any file upload
+    upload.single("courseImage"), // Ensures a single file upload for courseImage
     async (req, res) => {
       try {
-        // Find the file uploaded from the 'courseImage' field
-        const file = req.files.find((file) => file.fieldname === "courseImage");
+        console.log("Received form data:", req.body); // Log all received form data
+        // File is directly available as req.file when using upload.single()
+        const file = req.file;
+
+        // Log file information if uploaded
+        if (file) {
+          console.log("Received file with name:", file.originalname);
+        } else {
+          console.log("No file uploaded with the courseImage field");
+        }
 
         // Check if file is included in the request
         if (!file) {
@@ -20,17 +28,15 @@ const courseController = {
         }
 
         // Validate file type (allowed extensions: .jpg, .jpeg, .png)
-        const allowedExtensions = [".jpg", ".jpeg", ".png", ".pdf"];
+        const allowedExtensions = [".jpg", ".jpeg", ".png"];
         const fileExtension = extname(file.originalname).toLowerCase();
         if (!allowedExtensions.includes(fileExtension)) {
-          throw new Error(
-            "Invalid file type. Only JPEG, PNG, and PDF are allowed"
-          );
+          throw new Error("Invalid file type. Only JPEG and PNG are allowed");
         }
 
         const fileData = file.buffer; // Store file data as buffer
 
-        // Extract data from the request body
+        // Extract and convert data from the request body
         const {
           courseCode,
           title,
@@ -45,16 +51,21 @@ const courseController = {
           keywords,
         } = req.body;
 
+        // Convert and log price and duration to ensure they're correctly processed
+        console.log(
+          `Converting price: ${price} and duration: ${duration} to numbers.`
+        );
+
         // Create a new course document
         const newCourse = new Course({
           courseCode,
           title,
           description,
           category,
-          price,
+          price: Number(price), // Convert price to Number
           instructor,
-          duration,
-          courseImage: fileData, // Store file data in courseImage field as buffer
+          duration: Number(duration), // Convert duration to Number
+          courseImage: fileData, // Already a buffer
           topics,
           prerequisites,
           publishingOptions,
@@ -63,14 +74,12 @@ const courseController = {
 
         // Save the course document to the database
         await newCourse.save();
+        console.log("New course created successfully");
 
         // Respond with success message
         res.status(201).json({ message: "Course created successfully" });
       } catch (error) {
-        // Log the error
         console.error("Error creating course:", error);
-
-        // Respond with error message
         res
           .status(500)
           .json({ message: error.message || "Internal server error" });
