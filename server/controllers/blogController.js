@@ -1,31 +1,31 @@
-import { Book } from "../models/book.js";
+import { Blog } from "../models/blog.js";
 import multer from "multer";
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
 
-const bookController = {
-  createBook: (req, res) => {
+const blogController = {
+  createBlog: (req, res) => {
     upload(req, res, async (error) => {
       if (error) {
         return res.status(500).json({ message: error.message });
       }
 
       const file = req.file;
-      const bookData = {
+      const blogData = {
         ...req.body,
         publicationDate: new Date(req.body.publicationDate),
         image: file ? file.buffer : undefined,
       };
 
       try {
-        const newBook = new Book(bookData);
-        await newBook.save();
+        const newBlog = new Blog(blogData);
+        await newBlog.save();
         res
           .status(201)
-          .json({ message: "Book created successfully", data: newBook });
+          .json({ message: "Blog created successfully", data: newBlog });
       } catch (dbError) {
-        console.error("Error creating book:", dbError);
+        console.error("Error creating blog:", dbError);
         res
           .status(500)
           .json({ message: dbError.message || "Internal server error" });
@@ -33,15 +33,15 @@ const bookController = {
     });
   },
 
-  getAllBooks: async (req, res) => {
+  getAllBlogs: async (req, res) => {
     try {
-      const books = await Book.find();
-      res.status(200).json(books);
+      const blogs = await Blog.find();
+      res.status(200).json(blogs);
     } catch (error) {
-      console.error("Error fetching books:", error);
+      console.error("Error fetching blogs:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   },
 };
 
-export default bookController;
+export default blogController;
