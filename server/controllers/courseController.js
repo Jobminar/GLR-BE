@@ -90,44 +90,33 @@ const courseController = {
   // Controller method to retrieve all courses
   getAllCourses: async (req, res) => {
     try {
-      // Retrieve all courses from the database
-      const courses = await Course.find();
+      const coursesCursor = Course.find().cursor();
 
-      // Send the courses as a response
+      // Placeholder for processed courses, if you wish to send them back
+      let courses = [];
+
+      for (
+        let course = await coursesCursor.next();
+        course != null;
+        course = await coursesCursor.next()
+      ) {
+        // Convert the image to Base64 if it exists
+        if (course.courseImage && course.courseImage instanceof Buffer) {
+          // Convert Buffer to Base64
+          const imageBase64 = course.courseImage.toString("base64");
+
+          course = course.toObject();
+          course.courseImageBase64 = `data:image/jpeg;base64,${imageBase64}`; // Assuming image is JPEG
+        }
+
+        console.log(course);
+        courses.push(course);
+      }
+
+      // Send all processed courses in response, if desired
       res.status(200).json(courses);
     } catch (error) {
-      // Handle errors
       console.error("Error fetching courses:", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  },
-
-  // Controller method to retrieve a single course by ID
-  getCourse: async (req, res) => {
-    try {
-      // Retrieve course by ID from the request parameters
-      const courseId = req.params.id;
-      const course = await Course.findById(courseId);
-
-      // If course is not found
-      if (!course) {
-        return res.status(404).json({ message: "Course not found" });
-      }
-
-      // Assuming courseImage is a buffer, send the file content
-      if (course.courseImage && course.courseImage instanceof Buffer) {
-        res.setHeader(
-          "Content-Type",
-          "image/" + extname(course.courseImage).slice(1)
-        ); // Set appropriate content type based on extension
-        res.send(course.courseImage); // Send the file content
-      } else {
-        // Handle case where no image is associated with the course or it's not a buffer
-        res.status(200).json({ message: "Course retrieved without image" });
-      }
-    } catch (error) {
-      // Handle errors
-      console.error("Error fetching course:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   },

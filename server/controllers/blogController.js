@@ -35,7 +35,27 @@ const blogController = {
 
   getAllBlogs: async (req, res) => {
     try {
-      const blogs = await Blog.find();
+      const cursor = Blog.find().cursor();
+      let blogs = [];
+
+      for (
+        let doc = await cursor.next();
+        doc != null;
+        doc = await cursor.next()
+      ) {
+        const blog = doc.toObject(); // Convert Mongoose document to plain JavaScript object
+
+        // Check if the blog has an image and convert it to Base64, if present
+        if (blog.image && blog.image instanceof Buffer) {
+          // Assuming the image is JPEG; adjust the MIME type accordingly
+          blog.image = `data:image/jpeg;base64,${blog.image.toString(
+            "base64"
+          )}`;
+        }
+
+        blogs.push(blog);
+      }
+
       res.status(200).json(blogs);
     } catch (error) {
       console.error("Error fetching blogs:", error);

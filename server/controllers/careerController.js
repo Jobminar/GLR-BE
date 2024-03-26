@@ -74,17 +74,25 @@ const careerController = {
   // This method does not follow conventional practices and is for illustrative purposes
   getAllCareers: async (req, res) => {
     try {
-      const cursor = Career.find().cursor();
-      for (
-        let doc = await cursor.next();
-        doc != null;
-        doc = await cursor.next()
-      ) {
-        // Streaming or sending documents one by one - this is a simplistic approach
-        // Note: This won't work as expected with HTTP since HTTP responses are typically sent all at once
-        res.write(JSON.stringify(doc) + "\n");
-      }
-      res.end();
+      const careers = await Career.find();
+
+      // Convert each career image to Base64
+      const careersWithBase64Images = careers.map((career) => {
+        const careerObject = career.toObject(); // Convert document to object
+        if (
+          careerObject.careerImage &&
+          careerObject.careerImage instanceof Buffer
+        ) {
+          // Convert the Buffer to a Base64 string
+          careerObject.careerImage = `data:image/jpeg;base64,${careerObject.careerImage.toString(
+            "base64"
+          )}`;
+          // Note: Adjust the MIME type as necessary (e.g., if you know the exact image type)
+        }
+        return careerObject;
+      });
+
+      res.json(careersWithBase64Images); // Send modified documents with Base64 images
     } catch (error) {
       console.error("Error fetching careers:", error);
       res.status(500).json({ message: "Internal server error" });
