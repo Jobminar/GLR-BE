@@ -6,7 +6,6 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { Server as SocketIOServer } from "socket.io";
 import router from "./routes/index.js";
-import multer from "multer";
 
 dotenv.config();
 
@@ -17,20 +16,10 @@ const server = http.createServer(app);
 // Middleware
 app.use(cors()); // CORS configuration
 app.use(compression()); // Compression middleware
-app.use(express.json({limit:"40mb"})); // JSON parsing middleware
+app.use(express.json()); // JSON parsing middleware
+
 // Add the Multer middleware to handle file uploads
-//Set up Multer storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-// Initialize Multer middleware
-const upload = multer({ storage });
-app.use(upload.single("pdfFile"));
+
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI || "YOUR_MONGO_URI";
 mongoose
