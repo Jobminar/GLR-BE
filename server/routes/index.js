@@ -31,4 +31,6 @@ router.get("/getcontact", contactController.getAllContact);
 //blogrouters
 router.post("/blog", blogController.createBlog);
 router.get("/blog", blogController.getAllBlogs);
+router.delete("/blogs/:id", blogController.deleteBlog);
+
 export default router;

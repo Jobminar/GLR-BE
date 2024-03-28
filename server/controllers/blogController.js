@@ -12,10 +12,8 @@ const blogController = {
         return res.status(500).json({ message: error.message });
       }
 
-      // Extract the file from the request, if present
       const file = req.file;
 
-      // Prepare the blog data, including the image buffer if an image was uploaded
       const blogData = {
         ...req.body,
         publicationDate: new Date(req.body.publicationDate),
@@ -39,30 +37,35 @@ const blogController = {
 
   getAllBlogs: async (req, res) => {
     try {
-      const cursor = Blog.find().cursor();
-      let blogs = [];
-
-      for (
-        let doc = await cursor.next();
-        doc != null;
-        doc = await cursor.next()
-      ) {
-        const blog = doc.toObject(); // Convert Mongoose document to plain JavaScript object
-
-        // Convert the image buffer to Base64 if present
-        if (blog.image && blog.image instanceof Buffer) {
-          // Adjust the MIME type accordingly. You might want to store this in the DB or infer it.
-          blog.image = `data:image/jpeg;base64,${blog.image.toString(
+      const blogs = await Blog.find({});
+      const blogsTransformed = blogs.map((blog) => {
+        const blogObj = blog.toObject();
+        if (blogObj.image && Buffer.isBuffer(blogObj.image)) {
+          blogObj.image = `data:image/jpeg;base64,${blogObj.image.toString(
             "base64"
           )}`;
         }
-
-        blogs.push(blog);
-      }
-
-      res.status(200).json(blogs);
+        return blogObj;
+      });
+      res.status(200).json(blogsTransformed);
     } catch (error) {
       console.error("Error fetching blogs:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  },
+
+  deleteBlog: async (req, res) => {
+    const { id } = req.params; // Get the blog ID from the request parameters
+
+    try {
+      const result = await Blog.findByIdAndDelete(id);
+      if (result) {
+        res.status(200).json({ message: "Blog deleted successfully" });
+      } else {
+        res.status(404).json({ message: "Blog not found" });
+      }
+    } catch (error) {
+      console.error("Error deleting blog:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   },
