@@ -1,6 +1,7 @@
 import { Blog } from "../models/blog.js";
 import multer from "multer";
 
+// Setup multer for memory storage
 const storage = multer.memoryStorage();
 const upload = multer({ storage }).single("image");
 
@@ -11,11 +12,14 @@ const blogController = {
         return res.status(500).json({ message: error.message });
       }
 
+      // Extract the file from the request, if present
       const file = req.file;
+
+      // Prepare the blog data, including the image buffer if an image was uploaded
       const blogData = {
         ...req.body,
         publicationDate: new Date(req.body.publicationDate),
-        image: file ? file.buffer : undefined,
+        image: file ? file.buffer : undefined, // Store the buffer directly
       };
 
       try {
@@ -45,9 +49,9 @@ const blogController = {
       ) {
         const blog = doc.toObject(); // Convert Mongoose document to plain JavaScript object
 
-        // Check if the blog has an image and convert it to Base64, if present
+        // Convert the image buffer to Base64 if present
         if (blog.image && blog.image instanceof Buffer) {
-          // Assuming the image is JPEG; adjust the MIME type accordingly
+          // Adjust the MIME type accordingly. You might want to store this in the DB or infer it.
           blog.image = `data:image/jpeg;base64,${blog.image.toString(
             "base64"
           )}`;
